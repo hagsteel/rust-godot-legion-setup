@@ -1,0 +1,19 @@
+[package]
+name = "tutproj"
+version = "0.1.0"
+authors = ["Hagsteel <me@hagsteel.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+crate-type = ["dylib"]
+
+[features]
+godot_test = []
+
+[dependencies]
+gdnative = "0.8.0"
+gdextras = { path = "../../gdextras"} 
+legion = { git = "https://github.com/hagsteel/legion.git" }
+lazy_static = "1.4.0"
