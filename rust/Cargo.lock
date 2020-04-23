@@ -332,7 +332,7 @@ checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
 [[package]]
 name = "legion"
 version = "0.2.1"
-source = "git+https://github.com/hagsteel/legion.git#bb5e29eea61fc058b734023ebff0e36dc9e9684a"
+source = "git+https://github.com/tomgillen/legion.git#bd441f4811e7a9e877a0f479a674bbdbf4e4cda3"
 dependencies = [
  "legion-core",
  "legion-systems",
@@ -341,7 +341,7 @@ dependencies = [
 [[package]]
 name = "legion-core"
 version = "0.2.1"
-source = "git+https://github.com/hagsteel/legion.git#bb5e29eea61fc058b734023ebff0e36dc9e9684a"
+source = "git+https://github.com/tomgillen/legion.git#bd441f4811e7a9e877a0f479a674bbdbf4e4cda3"
 dependencies = [
  "crossbeam-channel",
  "derivative",
@@ -358,7 +358,7 @@ dependencies = [
 [[package]]
 name = "legion-systems"
 version = "0.2.1"
-source = "git+https://github.com/hagsteel/legion.git#bb5e29eea61fc058b734023ebff0e36dc9e9684a"
+source = "git+https://github.com/tomgillen/legion.git#bd441f4811e7a9e877a0f479a674bbdbf4e4cda3"
 dependencies = [
  "bit-set",
  "crossbeam-channel",

@@ -15,5 +15,5 @@ godot_test = []
 [dependencies]
 gdnative = "0.8.0"
 gdextras = { path = "../../gdextras"} 
-legion = { git = "https://github.com/hagsteel/legion.git" }
+legion = { git = "https://github.com/tomgillen/legion.git" }
 lazy_static = "1.4.0"
