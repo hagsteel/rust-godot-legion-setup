@@ -1,11 +1,9 @@
-use gdnative::*;
+use gdnative::prelude::*;
 
 mod gameworld;
 
-fn init(handle: init::InitHandle) {
+fn init(handle: InitHandle) {
     handle.add_class::<gameworld::GameWorld>();
 }
 
-godot_gdnative_init!();
-godot_nativescript_init!(init);
-godot_gdnative_terminate!();
+godot_init!(init);

@@ -1,11 +1,8 @@
-use std::sync::Mutex;
-use gdnative::{
-    godot_error, godot_wrap_method, godot_wrap_method_inner, godot_wrap_method_parameter_count,
-    methods, NativeClass, InputEvent, Node2D, Vector2
-};
-use legion::prelude::*;
+use gdnative::api::{InputEvent, Node2D};
+use gdnative::prelude::*;
 use lazy_static::lazy_static;
-
+use legion::prelude::*;
+use std::sync::Mutex;
 
 // -----------------------------------------------------------------------------
 //     - World -
@@ -20,7 +17,6 @@ where
 {
     let _ = WORLD.try_lock().map(|mut world| f(&mut world));
 }
-
 
 // -----------------------------------------------------------------------------
 //     - Resources -
@@ -62,7 +58,6 @@ impl Process {
     }
 }
 
-
 // -----------------------------------------------------------------------------
 //     - Godot node -
 //     The world node
@@ -70,50 +65,44 @@ impl Process {
 #[derive(NativeClass)]
 #[inherit(Node2D)]
 pub struct GameWorld {
-    process: Process
+    process: Process,
 }
 
 #[methods]
 impl GameWorld {
-    pub fn _init(_owner: Node2D) -> Self {
+    pub fn new(_owner: &Node2D) -> Self {
         Self {
             process: Process::new(),
         }
     }
 
     #[export]
-    pub fn _ready(&self, owner: Node2D) {
+    pub fn _ready(&self, owner: &Node2D) {
         unsafe {
-            let node = owner
-                .get_node("TheNode".into())
+            let node = unsafe { 
+                owner
+                .get_node("TheNode")
+                .map(|node| node.assume_safe())
                 .and_then(|node| node.cast::<Node2D>())
-                .unwrap();
-            
+                .unwrap()
+            };
+
             with_world(|world| {
                 world.insert(
                     (), // No tags
-                    vec![(NodeComponent(node), )]
+                    vec![(NodeComponent(node.claim()),)],
                 );
             });
         }
     }
 
     #[export]
-    pub fn _unhandled_input(&self, owner: Node2D, event: InputEvent) {
-    }
-
-    #[export]
-    pub fn _process(&mut self, owner: Node2D, delta: f64) {
+    pub fn _process(&mut self, owner: &Node2D, delta: f64) {
         self.process.execute(delta);
-    }
-
-    #[export]
-    pub fn _physics_process(&self, owner: Node2D, delta: f64) {
     }
 }
 
-
-pub struct NodeComponent(Node2D);
+pub struct NodeComponent(Ref<Node2D>);
 
 unsafe impl Send for NodeComponent {}
 unsafe impl Sync for NodeComponent {}
@@ -124,11 +113,11 @@ fn move_node() -> Box<dyn Runnable> {
         .with_query(<Write<NodeComponent>>::query())
         .build_thread_local(|cmd, world, delta, query| {
             for mut node in query.iter_mut(world) {
-                unsafe {
-                    let speed = 80.;
-                    let vel = Vector2::new(1.0, 0.0) * speed * delta.0;
-                    node.0.global_translate(vel);
-                }
+                let speed = 80.;
+                let vel = Vector2::new(1.0, 0.0) * speed * delta.0;
+
+                let node = unsafe { node.0.assume_safe() };
+                node.global_translate(vel);
             }
         })
 }
